@@ -1,0 +1,26 @@
+import sqlite3
+
+conn = sqlite3.connect('expenses.db')
+cursor = conn.cursor()
+cursor.execute('''CREATE TABLE IF NOT EXISTS expenses (id INTEGER PRIMARY KEY, item TEXT, cost REAL)''')
+
+def add_expense(item, cost):
+    cursor.execute('INSERT INTO expenses (item, cost) VALUES (?, ?)', (item, cost))
+    conn.commit()
+
+def view_expenses():
+    cursor.execute('SELECT * FROM expenses')
+    for row in cursor.fetchall():
+        print(f"Item: {row[1]}, Cost: {row[2]}")
+
+while True:
+    choice = input("Enter 'a' to add an expense, 'v' to view all expenses, 'q' to quit: ")
+    if choice == 'a':
+        item = input("Enter item name: ")
+        cost = float(input("Enter cost: "))
+        add_expense(item, cost)
+    elif choice == 'v':
+        view_expenses()
+    elif choice == 'q':
+        break
+conn.close()
